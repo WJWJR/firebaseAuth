@@ -1,0 +1,17 @@
+.container {
+  width: 80%;
+  margin:0 auto;
+}
+
+#userinput, #userbutton {
+  padding: 0.3rem;
+  margin-top: 1rem;
+}
+
+#display {
+  width: 50%;
+  height:5rem;
+  background-color: #eaeaea;
+  color: #333;
+  border: 1px solid #333;
+}
