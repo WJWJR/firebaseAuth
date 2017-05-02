@@ -1,24 +1,27 @@
+$('#display').hide();
+$('#userInput').hide();
+$('#userButton').hide();
 
 $('#signUpButton').on('click',function(event) {
   let email = $('#signUpEmail').val();
   let password = $('#signUpPassword').val();
-  firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+  .then(function(user) {
+    if (user){
+      $('#userInput').show();
+      $('#userButton').show();
+      $('#display').show();
+    // .then(user => user.getToken(response.uid)
+      console.log(user.uid);
+    }
+  })
+  .catch(function(error) {
   // Handle Errors here.
   var errorCode = error.code;
   var errorMessage = error.message;
   // ...
 });
 });
-
-// function loggedIn(event) {
-//   let emailLogin = document.getElementById("loginEmail").value;
-//   let passwordLogin = document.getElementById("loginPassword").value;
-//   let loginButton = document.getElementById("loginButton");
-// console.log(emailLogin);
-// console.log(passwordLogin);
-// }
-// loginButton.addEventListener('click', loggedIn);
-// console.log('submitting');
 
 
   // Initialize Firebase
@@ -37,22 +40,6 @@ $('#signUpButton').on('click',function(event) {
 
 //Creating Users with Email and Password with
 //an if/ else errorCode of auth/weak-password
-$('loginButton').on('click', function(event) {
-  let email = $('#loginEmail').val();
-  let password = $('#loginPassword').val();
-  firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    // ...
-    if (errorCode == 'auth/weak-password') {
-      alert('The password is to weak');
-    } else {
-      alert(errorMessage);
-    }
-    console.log(error);
-  });
-});
 
 
 // Sign in a user with an email and password
@@ -60,30 +47,37 @@ $('#loginButton').on('click', function(event) {
   let email = $('#loginEmail').val();
   let password = $('#loginPassword').val();
   firebase.auth().signInWithEmailAndPassword(email, password)
+  .then(user => user.getToken())
+  .then(JWT => console.log(JWT))
   .then(function(response){
     console.log(response);
-      $('#userInput').show(function() {
-        $('#userButton').show();
-        $('#display').show();
-        $('#userButton').on('click', function(){
+      $('#userInput').show();
+      $('#display').show();
+      $('#userButton').show();
+
+
+
+      $('#userButton').on('click', function(){
           let userInput = $('#userInput').val();
-          userInput;
-          console.log('#userButton');
+          $('#display').append('<li>' + userInput +'</li>');
+          console.log(userInput);
+        firebase.database().ref('message/').push({
+        email: email,
+        userInput : userInput
+      })
+
+          });
         })
 
-        // $('display').show(function() {
-        //   $('#userInput').val();
-
-
     })
-  })
-  .catch(function(error) {
-  // Handle Errors here.
-  var errorCode = error.code;
-  var errorMessage = error.message;
-  console.log(error.code);
-  });
-})
+
+    // .catch(function(error) {
+    // // Handle Errors here.
+    // var errorCode = error.code;
+    // var errorMessage = error.message;
+    // console.log(error.code);
+    // });
+
 
 
   //sign out a Users
